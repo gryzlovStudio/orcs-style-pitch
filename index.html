@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORCS · Style Presentation — 3D.GRYZ Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0908; --bg2:#100d0b; --panel:#17130f; --panel2:#1f1913;
+    --ink:#f3ecdd; --dim:#a1937c; --dim2:#6f6455;
+    --gold:#e8b44a; --gold-l:#ffe7a6; --gold-d:#a7761f;
+    --ember:#ff7f2a; --ember-glow:rgba(255,127,42,.5);
+    --green:#8fbf4a; --line:rgba(255,220,150,.13); --line2:rgba(255,220,150,.07);
+    --disp:"Russo One",sans-serif; --body:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg); color:var(--ink); font-family:var(--body); font-weight:400;
+    line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased}
+  img{display:block; max-width:100%}
+  ::selection{background:var(--ember); color:#1a0d02}
+
+  /* фактурный шум */
+  body::before{content:""; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .wrap{max-width:1240px; margin:0 auto; padding:0 32px}
+  .gold{background:linear-gradient(180deg,var(--gold-l),var(--gold) 55%,var(--gold-d));
+    -webkit-background-clip:text; background-clip:text; color:transparent}
+
+  /* ── top bar ── */
+  .topbar{position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 32px; background:linear-gradient(180deg,rgba(11,9,8,.9),transparent);
+    backdrop-filter:blur(2px); transition:.4s}
+  .topbar.solid{background:rgba(11,9,8,.92); border-bottom:1px solid var(--line); backdrop-filter:blur(8px)}
+  .brand{font-family:var(--disp); font-size:15px; letter-spacing:1px; display:flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none}
+  .brand b{color:var(--gold)}
+  .brand .dot{width:7px; height:7px; border-radius:50%; background:var(--ember); box-shadow:0 0 10px var(--ember)}
+  .topnav{display:flex; gap:26px; font-size:12.5px; letter-spacing:.5px; color:var(--dim)}
+  .topnav a{color:var(--dim); text-decoration:none; transition:.25s} .topnav a:hover{color:var(--gold-l)}
+  @media(max-width:720px){.topnav{display:none}}
+  .progress{position:fixed; top:0; left:0; height:2px; background:linear-gradient(90deg,var(--ember),var(--gold-l)); z-index:201; width:0}
+
+  /* ── HERO ── */
+  .hero{position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden}
+  .hero-bg{position:absolute; inset:0; background-size:cover; background-position:center;
+    background-image:url("StyleD_Assets/A_backgrounds/styleD_demo_00001_.webp"); transform:scale(1.08); filter:brightness(.58) saturate(1.02)}
+  .hero-bg::after{content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(120% 90% at 50% 40%, transparent 0%, rgba(8,6,5,.55) 55%, var(--bg) 100%),
+      linear-gradient(180deg, rgba(8,6,5,.82) 0%, rgba(8,6,5,.35) 32%, rgba(8,6,5,.72) 76%, var(--bg) 100%),
+      linear-gradient(90deg, rgba(8,6,5,.78) 0%, rgba(8,6,5,.18) 52%, transparent 78%)}
+  .hero-inner{position:relative; z-index:3; width:100%}
+  .kicker{display:inline-flex; align-items:center; gap:10px; font-size:12px; letter-spacing:3.5px; text-transform:uppercase;
+    color:var(--gold); margin-bottom:22px; padding:7px 16px; border:1px solid var(--line); border-radius:40px; background:rgba(0,0,0,.35)}
+  .kicker .dot{width:6px; height:6px; border-radius:50%; background:var(--ember); box-shadow:0 0 8px var(--ember)}
+  .hero h1{font-family:var(--disp); font-size:clamp(52px,11vw,140px); line-height:.92; letter-spacing:2px;
+    text-shadow:0 6px 40px rgba(0,0,0,.6)}
+  .hero h1 .sub{display:block; font-size:clamp(16px,3vw,30px); letter-spacing:10px; margin-top:14px; color:var(--ink); text-shadow:0 2px 20px #000}
+  .hero .lede{max-width:540px; margin:26px 0 0; font-size:17px; color:#e7ddca; text-shadow:0 2px 12px rgba(0,0,0,.7)}
+  .hero .meta{display:flex; gap:30px; margin-top:38px; flex-wrap:wrap}
+  .hero .meta div{border-left:2px solid var(--gold-d); padding-left:14px}
+  .hero .meta .l{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--dim)}
+  .hero .meta .v{font-size:15px; color:var(--ink); font-weight:600; margin-top:3px}
+  .hero-orc{position:absolute; right:2%; bottom:-2%; z-index:2; height:96%; max-height:960px; width:auto;
+    filter:drop-shadow(0 30px 50px rgba(0,0,0,.7)); animation:floaty 6s ease-in-out infinite}
+  .hero-orc::before{content:""}
+  @media(max-width:900px){.hero-orc{opacity:.45; right:-16%; height:78%}}
+  @media(max-width:720px){
+    .hero{min-height:auto; padding:120px 0 68px}
+    .hero-orc{display:none}
+    .hero h1 .sub{letter-spacing:5px}
+    .hero .lede{font-size:16px}
+    .kicker{letter-spacing:2.5px; font-size:11px}
+    .scrollcue{display:none}
+    .hero .meta{gap:16px 26px; margin-top:30px}
+    section{padding:72px 0}
+    .wrap{padding:0 20px}
+  }
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  .scrollcue{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); z-index:4; color:var(--dim);
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:center}
+  .scrollcue .m{width:22px; height:34px; border:2px solid var(--dim); border-radius:12px; margin:0 auto 8px; position:relative}
+  .scrollcue .m::after{content:""; position:absolute; top:6px; left:50%; transform:translateX(-50%); width:3px; height:7px;
+    background:var(--gold); border-radius:2px; animation:scr 1.6s infinite}
+  @keyframes scr{0%{opacity:0; top:6px}40%{opacity:1}100%{opacity:0; top:16px}}
+  /* embers */
+  .ember{position:absolute; z-index:2; width:4px; height:4px; border-radius:50%; background:var(--ember);
+    box-shadow:0 0 8px 2px var(--ember-glow); opacity:0; animation:rise linear infinite}
+  @keyframes rise{0%{transform:translateY(20px) scale(1); opacity:0}10%{opacity:.9}90%{opacity:.5}100%{transform:translateY(-260px) scale(.3); opacity:0}}
+
+  /* ── sections ── */
+  section{position:relative; padding:110px 0}
+  .sec-head{margin-bottom:56px; max-width:760px}
+  .sec-num{font-family:var(--disp); font-size:14px; letter-spacing:4px; color:var(--gold-d)}
+  .sec-head h2{font-family:var(--disp); font-size:clamp(30px,5vw,52px); line-height:1.05; margin:10px 0 18px; letter-spacing:1px}
+  .sec-head p{color:var(--dim); font-size:16.5px; max-width:640px}
+  .divider{height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+  /* reveal */
+  .rv{opacity:0; transform:translateY(34px); transition:.9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1; transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  /* ── VISION ── */
+  .vision{display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center}
+  @media(max-width:900px){.vision{grid-template-columns:1fr}}
+  .vision p.big{font-size:20px; color:#e9dfcb; margin-bottom:22px; line-height:1.65}
+  .vision p.big b{color:var(--gold-l); font-weight:600}
+  .pills{display:flex; flex-wrap:wrap; gap:10px; margin-top:26px}
+  .pill{font-size:12.5px; padding:8px 15px; border:1px solid var(--line); border-radius:30px; color:var(--dim); background:var(--panel)}
+  .pill b{color:var(--gold)}
+  .vision-card{position:relative; border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    background:radial-gradient(90% 65% at 50% 26%, #33283f 0%, #211829 46%, #120d0a 100%)}
+  .vision-card::after{content:""; position:absolute; left:50%; top:34%; transform:translate(-50%,-50%); width:78%; height:60%;
+    background:radial-gradient(circle, rgba(255,180,90,.16), transparent 68%); pointer-events:none}
+  .vision-card img{position:relative; width:100%; aspect-ratio:3/4; object-fit:cover; object-position:top center}
+  .vision-card .cap{position:absolute; left:0; right:0; bottom:0; padding:18px; font-size:13px; color:var(--gold-l);
+    background:linear-gradient(180deg,transparent,rgba(0,0,0,.85))}
+
+  /* ── LOCATIONS ── */
+  .loc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px}
+  @media(max-width:1000px){.loc-grid{grid-template-columns:repeat(2,1fr)}}
+  .loc{position:relative; border-radius:16px; overflow:hidden; cursor:pointer; border:1px solid var(--line);
+    background:#000; aspect-ratio:9/16; transition:.45s}
+  .loc img{width:100%; height:100%; object-fit:cover; transition:.7s}
+  .loc::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.82))}
+  .loc .t{position:absolute; left:16px; bottom:14px; z-index:2}
+  .loc .t .n{font-family:var(--disp); font-size:15px; letter-spacing:.5px}
+  .loc .t .d{font-size:11px; color:var(--dim); letter-spacing:1px; text-transform:uppercase}
+  .loc:hover{transform:translateY(-6px); border-color:var(--gold-d); box-shadow:0 24px 50px rgba(0,0,0,.55)}
+  .loc:hover img{transform:scale(1.08)}
+  .loc .zoom{position:absolute; top:12px; right:12px; z-index:2; width:30px; height:30px; border-radius:9px;
+    background:rgba(0,0,0,.5); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--gold-l); font-size:14px; opacity:0; transition:.3s}
+  .loc:hover .zoom{opacity:1}
+
+  /* ── ORC ROSTER (interactive) ── */
+  .roster{position:relative; display:flex; justify-content:center; align-items:flex-end; padding:0}
+  /* каждая ПОЛОСА = равный триггер (ширина зоны ÷ число персонажей) */
+  .slot{flex:1 1 0; max-width:166px; position:relative; height:352px; display:flex; align-items:flex-end; justify-content:center; cursor:pointer}
+  .slot:nth-child(even){padding-bottom:34px}
+  .slot:hover{z-index:20}
+  .char{position:relative; flex:none; width:258px; pointer-events:none; transition:.45s cubic-bezier(.2,.7,.2,1)}
+  .char .glow{position:absolute; left:50%; top:52%; transform:translate(-50%,-50%); width:230px; height:230px; border-radius:50%;
+    background:radial-gradient(circle, var(--halo,rgba(143,191,74,.5)) 0%, transparent 66%); filter:blur(8px); opacity:.45; transition:.45s; z-index:-1}
+  .char img{width:100%; pointer-events:none; filter:drop-shadow(0 18px 26px rgba(0,0,0,.6)); transition:.45s}
+  .char .nm{position:absolute; left:50%; bottom:-6px; transform:translateX(-50%); font-family:var(--disp); font-size:12px;
+    letter-spacing:.5px; color:var(--gold-l); white-space:nowrap; opacity:0; transition:.35s; text-shadow:0 2px 8px #000}
+  .slot:hover .char{transform:translateY(-24px) scale(1.12)}
+  .slot:hover .glow{opacity:1; width:280px; height:280px}
+  .slot:hover .nm{opacity:1; bottom:-20px}
+  @media(max-width:1000px){.roster{flex-wrap:wrap} .slot{flex:0 0 33%; max-width:none; height:300px} .char{width:180px}}
+  .roster-hint{text-align:center; color:var(--dim2); font-size:12.5px; letter-spacing:1px; margin-top:26px}
+  .roster-hint b{color:var(--gold)}
+
+  /* ── GRID (monsters / buildings / elves) ── */
+  .grid{display:grid; gap:16px}
+  .g-mon{grid-template-columns:repeat(6,1fr)}
+  .g-bld{grid-template-columns:repeat(5,1fr)}
+  .g-elf{grid-template-columns:repeat(5,1fr)}
+  @media(max-width:1000px){.g-mon{grid-template-columns:repeat(3,1fr)} .g-bld,.g-elf{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:560px){.g-mon,.g-bld,.g-elf{grid-template-columns:repeat(2,1fr)}}
+  .tile{position:relative; border:1px solid var(--line); border-radius:14px; background:radial-gradient(120% 90% at 50% 0%,var(--panel2),var(--panel));
+    padding:18px 10px 34px; text-align:center; cursor:pointer; transition:.4s; overflow:hidden}
+  .tile::before{content:""; position:absolute; left:50%; top:40%; transform:translate(-50%,-50%); width:120px; height:120px; border-radius:50%;
+    background:radial-gradient(circle,rgba(255,180,90,.16),transparent 68%); opacity:0; transition:.4s}
+  .tile img{height:118px; width:auto; margin:0 auto; object-fit:contain; filter:drop-shadow(0 12px 16px rgba(0,0,0,.55)); transition:.5s; position:relative}
+  .tile .nm{position:absolute; left:0; right:0; bottom:12px; font-size:12px; letter-spacing:.6px; color:var(--dim); transition:.3s}
+  .tile:hover{transform:translateY(-6px); border-color:var(--gold-d)}
+  .tile:hover::before{opacity:1}
+  .tile:hover img{transform:scale(1.12) translateY(-4px)}
+  .tile:hover .nm{color:var(--gold-l)}
+  .tile.big img{height:150px}
+
+  /* ── IN-GAME phone screens ── */
+  .screens{display:flex; gap:44px; justify-content:center; align-items:flex-start; flex-wrap:wrap}
+  .phone{position:relative; width:300px; height:648px; border-radius:34px; background:#000; padding:7px; flex:none;
+    box-shadow:0 0 0 2px #000, 0 30px 60px rgba(0,0,0,.7); border:1px solid #2a2a2a}
+  .pscreen{position:relative; width:100%; height:100%; border-radius:27px; overflow:hidden; background:#0d0a08}
+  .pscreen .pbg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+  .p-vig{position:absolute; inset:0; box-shadow:inset 0 0 60px 14px rgba(0,0,0,.6); pointer-events:none}
+  .p-top{position:absolute; top:12px; left:8px; right:8px; z-index:5; display:flex; gap:5px; align-items:flex-start}
+  .cpill{display:flex; align-items:center; gap:3px; background:linear-gradient(180deg,#241d15,#0f0a07); border:1.5px solid #0a0705;
+    border-radius:16px; padding:2px 9px 2px 3px; box-shadow:inset 0 0 0 1.2px var(--gold-d), 0 2px 4px rgba(0,0,0,.5)}
+  .cpill img{width:24px; height:24px} .cpill span{font-size:12px; font-weight:600; color:var(--gold-l)}
+  .p-set{margin-left:auto; width:30px; height:30px; border-radius:9px; overflow:hidden; border:1.5px solid #0a0705; box-shadow:inset 0 0 0 1px var(--gold-d)}
+  .p-banner{position:absolute; top:52px; left:50%; transform:translateX(-50%); z-index:5; width:170px}
+  .p-banner .lab{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--disp); font-size:11px; color:#fff2cf; text-shadow:0 1px 2px #2a0812; padding-bottom:3px}
+  .p-nav{position:absolute; left:0; right:0; bottom:0; z-index:6; height:64px}
+  .p-nav .navimg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top}
+  .p-nav .icons{position:absolute; inset:0; display:flex; align-items:center; justify-content:space-around; padding:0 10px 6px}
+  .p-nav .icons img{width:37px; height:37px}
+  .p-nav .icons .act{transform:translateY(-8px) scale(1.15); filter:drop-shadow(0 0 8px var(--ember-glow))}
+  .p-cta{position:absolute; left:14px; right:14px; bottom:76px; z-index:6; height:52px; border-radius:16px;
+    background:linear-gradient(180deg,#ffb15a,var(--ember) 55%,#c04b0c); border:2px solid #0a0705;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.5), 0 4px 0 #7a2b06, 0 0 20px var(--ember-glow);
+    display:flex; align-items:center; justify-content:center; gap:6px; font-family:var(--disp); font-size:14px; color:#3a1600}
+  .p-cta img{width:42px; height:42px; margin:-6px}
+  .p-orc-ig{position:absolute; z-index:4; filter:drop-shadow(0 8px 10px rgba(0,0,0,.6))}
+  .p-fx{position:absolute; z-index:3; pointer-events:none}
+  .p-side{position:absolute; z-index:5; display:flex; flex-direction:column; gap:8px}
+  .p-side img{width:44px; height:44px}
+  .p-label{text-align:center; margin-top:18px; font-family:var(--disp); font-size:13px; letter-spacing:.5px; color:var(--gold-l)}
+  .p-label span{display:block; font-family:var(--body); font-size:11.5px; color:var(--dim); letter-spacing:0; margin-top:4px}
+  /* inventory screen bits */
+  .inv-orc{position:absolute; left:50%; bottom:172px; transform:translateX(-50%); z-index:4; height:326px;
+    filter:drop-shadow(0 14px 16px rgba(0,0,0,.55))}
+  .inv-slot{position:absolute; z-index:5; width:48px; height:48px}
+  .inv-podglow{position:absolute; left:50%; bottom:110px; transform:translateX(-50%); width:230px; height:60px; z-index:3;
+    background:radial-gradient(closest-side,rgba(255,180,90,.4),transparent 72%)}
+  /* абсолютная раскладка из редактора (координаты в px, экран 286×634) */
+  .pel{position:absolute; filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .p-plank{position:absolute; left:0; right:0; bottom:0; width:100%; height:64px; object-fit:cover; object-position:top; z-index:5}
+  .p-navicon{position:absolute; width:37px; height:37px; z-index:7; filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+  .p-navicon.act{filter:drop-shadow(0 0 9px var(--ember-glow)) drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+
+  /* ── UI KIT ── */
+  .kit{display:grid; grid-template-columns:repeat(auto-fill,minmax(76px,1fr)); gap:12px}
+  .kit .k{aspect-ratio:1; border:1px solid var(--line2); border-radius:12px; background:var(--panel);
+    display:flex; align-items:center; justify-content:center; padding:15px; transition:.3s; overflow:hidden}
+  .kit .k:hover{border-color:var(--gold-d); background:var(--panel2); transform:translateY(-3px)}
+  .kit .k img{max-height:100%; max-width:100%; object-fit:contain; transition:.3s;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .kit .k:hover img{transform:scale(1.08)}
+  .kit-group{margin-bottom:14px; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-d)}
+  .kit-block{margin-bottom:40px}
+  .frames-row{display:flex; gap:20px; flex-wrap:wrap; align-items:center; justify-content:center; padding:10px 0}
+  .frames-row img{height:84px; width:auto; filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+  .frames-row .lg{height:150px}
+
+  /* palette + type */
+  .sys{display:grid; grid-template-columns:1fr 1fr; gap:40px}
+  @media(max-width:900px){.sys{grid-template-columns:1fr}}
+  .swatches{display:flex; gap:0; border-radius:14px; overflow:hidden; border:1px solid var(--line); height:110px; margin-top:16px}
+  .swatches div{flex:1; display:flex; align-items:flex-end; padding:8px; font-size:9.5px; color:rgba(255,255,255,.85); font-family:var(--body)}
+  .type-demo .d{font-family:var(--disp); font-size:40px; letter-spacing:1px}
+  .type-demo .b{font-size:15px; color:var(--dim); margin-top:8px}
+  .type-demo .lab{font-size:11px; letter-spacing:2px; color:var(--gold-d); text-transform:uppercase; margin-top:20px}
+
+  /* stats bar */
+  .stats-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:10px}
+  @media(max-width:720px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
+  .stat{border:1px solid var(--line); border-radius:14px; padding:22px; background:var(--panel); text-align:center}
+  .stat .num{font-family:var(--disp); font-size:34px; color:var(--gold-l)}
+  .stat .lab{font-size:12px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-top:6px}
+
+  /* ── CLOSING ── */
+  .closing{text-align:center; padding:130px 0}
+  .closing h2{font-family:var(--disp); font-size:clamp(30px,6vw,64px); line-height:1.05; margin-bottom:20px}
+  .closing p{color:var(--dim); font-size:17px; max-width:560px; margin:0 auto 40px}
+  .steps{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:50px}
+  .step{border:1px solid var(--line); border-radius:14px; padding:18px 22px; background:var(--panel); text-align:left; max-width:250px}
+  .step .n{font-family:var(--disp); color:var(--gold-d); font-size:13px}
+  .step .t{font-weight:600; margin:6px 0 4px; color:var(--ink)}
+  .step .d{font-size:13px; color:var(--dim)}
+  .contact{display:inline-flex; gap:28px; padding:20px 34px; border:1px solid var(--line); border-radius:16px; background:var(--panel); flex-wrap:wrap; justify-content:center}
+  .contact div .l{font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--dim)}
+  .contact div .v{font-size:15px; color:var(--gold-l); font-weight:600; margin-top:2px}
+  footer{border-top:1px solid var(--line); padding:30px 0; text-align:center; color:var(--dim2); font-size:12.5px}
+  footer a{color:var(--gold-l); text-decoration:none; font-weight:600} footer a:hover{text-decoration:underline}
+
+  /* ── LIGHTBOX ── */
+  .lb{position:fixed; inset:0; z-index:1000; background:rgba(6,4,3,.94); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:.35s; padding:40px}
+  .lb.on{opacity:1; pointer-events:auto}
+  .lb .box{position:relative; max-width:1000px; width:100%; display:flex; gap:40px; align-items:center; transform:scale(.94); transition:.4s}
+  .lb.on .box{transform:none}
+  @media(max-width:800px){.lb .box{flex-direction:column; gap:16px}}
+  .lb .imgwrap{position:relative; flex:1; text-align:center}
+  .lb .imgwrap::before{content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:70%; height:70%;
+    background:radial-gradient(circle,var(--lbhalo,rgba(232,180,74,.35)),transparent 68%); filter:blur(20px)}
+  .lb .imgwrap img{position:relative; max-height:74vh; margin:0 auto; filter:drop-shadow(0 30px 50px rgba(0,0,0,.7))}
+  .lb .info{flex:0 0 300px; max-width:320px}
+  @media(max-width:800px){.lb .info{flex:none; text-align:center}}
+  .lb .info .role{font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-d)}
+  .lb .info h3{font-family:var(--disp); font-size:34px; margin:8px 0 14px; letter-spacing:1px}
+  .lb .info p{color:var(--dim); font-size:15px; margin-bottom:20px}
+  .lb .info .st{display:flex; flex-direction:column; gap:8px}
+  .lb .info .st .r{display:flex; justify-content:space-between; border-bottom:1px solid var(--line2); padding-bottom:6px; font-size:13px}
+  .lb .info .st .r b{color:var(--gold-l)}
+  .lb .close{position:absolute; top:-8px; right:-8px; width:44px; height:44px; border-radius:50%; border:1px solid var(--line);
+    background:var(--panel); color:var(--ink); font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center}
+  .lb .close:hover{border-color:var(--gold); color:var(--gold-l)}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+<div class="topbar" id="topbar">
+  <a class="brand" href="https://3dgryz.ru" target="_blank" rel="noopener"><span class="dot"></span> 3D.<b>GRYZ</b> STUDIO</a>
+  <nav class="topnav">
+    <a href="#vision">Концепт</a>
+    <a href="#world">Мир</a>
+    <a href="#orcs">Орки</a>
+    <a href="#game">Игра</a>
+    <a href="#enemies">Враги</a>
+    <a href="#uikit">UI Kit</a>
+    <a href="#next">Дальше</a>
+  </nav>
+</div>
+
+<!-- ========== HERO ========== -->
+<header class="hero" id="top">
+  <div class="hero-bg"></div>
+  <img class="hero-orc" src="StyleD_Assets/B_orcs_menu/styleD_orc_chieftain_00001__cut.webp" alt="">
+  <div class="ember" style="left:12%; animation-duration:7s; animation-delay:0s"></div>
+  <div class="ember" style="left:22%; animation-duration:9s; animation-delay:2s"></div>
+  <div class="ember" style="left:38%; animation-duration:6s; animation-delay:1s"></div>
+  <div class="ember" style="left:58%; animation-duration:8s; animation-delay:3s"></div>
+  <div class="ember" style="left:70%; animation-duration:7.5s; animation-delay:.5s"></div>
+  <div class="ember" style="left:83%; animation-duration:10s; animation-delay:2.5s"></div>
+  <div class="wrap hero-inner">
+    <div class="kicker"><span class="dot"></span> Визуальный стиль · Style Pitch</div>
+    <h1 class="gold">ORCS<span class="sub">ВОЗВРАЩЕНИЕ ИЗГНАННЫХ</span></h1>
+    <p class="lede">Мобильная стратегия про орков: геймдизайн в духе <b>Gold&nbsp;&&nbsp;Goblins</b>, атмосфера и глубина <b>Warcraft&nbsp;III</b>. Наше визуальное направление — <b>Grim&nbsp;Casual</b>: серьёзный тёмный фэнтези-мир в приятной казуальной подаче.</p>
+    <div class="meta">
+      <div><div class="l">Жанр</div><div class="v">Mobile RTS / Merge</div></div>
+      <div><div class="l">Стиль</div><div class="v">Grim Casual · Stylized</div></div>
+      <div><div class="l">Студия</div><div class="v">3D.GRYZ Studio</div></div>
+      <div><div class="l">Статус</div><div class="v">Style&nbsp;Concept · 2026</div></div>
+    </div>
+  </div>
+  <div class="scrollcue"><div class="m"></div>Листайте</div>
+</header>
+
+<!-- ========== 01 VISION ========== -->
+<section id="vision">
+  <div class="wrap">
+    <div class="vision">
+      <div class="rv">
+        <div class="sec-num">01 — КОНЦЕПЦИЯ</div>
+        <h2 class="sec-head" style="margin-bottom:24px">Серьёзно.<br>И при этом играбельно.</h2>
+        <p class="big">В брифе — по-настоящему интересная и амбициозная задача: сохранить <b>серьёзный тон</b> уровня «Властелина колец» и одновременно остаться в жанре <b>казуальной мобильной стратегии</b>. Соединить глубину сеттинга с лёгкостью и доступностью мобильного геймплея — именно это и делает проект особенным.</p>
+        <p class="big">Мы предлагаем направление <b>Grim Casual</b>, потому что оно отвечает сразу на обе части задачи. Читаемые «вкусные» силуэты и приятная казуальная подача — для доступности на телефоне. Мрачная орочья атмосфера, тёмная земля, руины и факелы — для серьёзного, эпического тона. Чисто, дорого и оптимизировано под мобильные устройства.</p>
+        <div class="pills">
+          <span class="pill"><b>Референсы:</b> Warcraft Rumble</span>
+          <span class="pill">Diablo Immortal</span>
+          <span class="pill">Warcraft III</span>
+          <span class="pill">StarCraft II — силуэты</span>
+          <span class="pill">Gold & Goblins — геймплей</span>
+        </div>
+      </div>
+      <div class="vision-card rv d2">
+        <img src="StyleD_Assets/B_portrait/styleD_portrait_chief_00001__cut.webp" alt="Вождь орков">
+        <div class="cap">Вождь орков — ключевой образ фракции</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== 02 WORLD ========== -->
+<section id="world">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">02 — МИР ИГРЫ</div>
+      <h2>Локации и атмосфера</h2>
+      <p>Одно поле — вся игра: крепость снизу, карта открывается вверх, добыча и бой прямо на нём. Вид сверху, ~8 клеток. Ниже — реальные сгенерированные сцены в выбранном стиле.</p>
+    </div>
+    <div class="loc-grid">
+      <div class="loc rv" data-full="StyleD_Assets/A_backgrounds/styleD_demo_00001_.webp" data-title="Игровое поле">
+        <img src="StyleD_Assets/A_backgrounds/styleD_demo_00001_.webp" loading="lazy" alt="">
+        <span class="zoom">⤢</span>
+        <div class="t"><div class="n">Игровое поле</div><div class="d">Добыча · Мёрдж</div></div>
+      </div>
+      <div class="loc rv d1" data-full="StyleD_Assets/A_backgrounds/styleD_base_00001_.webp" data-title="Двор крепости">
+        <img src="StyleD_Assets/A_backgrounds/styleD_base_00001_.webp" loading="lazy" alt="">
+        <span class="zoom">⤢</span>
+        <div class="t"><div class="n">Двор крепости</div><div class="d">Застройка</div></div>
+      </div>
+      <div class="loc rv d2" data-full="StyleD_Assets/A_backgrounds/styleD_battle_00001_.webp" data-title="Поле боя">
+        <img src="StyleD_Assets/A_backgrounds/styleD_battle_00001_.webp" loading="lazy" alt="">
+        <span class="zoom">⤢</span>
+        <div class="t"><div class="n">Поле боя</div><div class="d">Наступление вверх</div></div>
+      </div>
+      <div class="loc rv d3" data-full="StyleD_Assets/A_backgrounds/styleD_inv_scene_00001_.webp" data-title="Зал экипировки">
+        <img src="StyleD_Assets/A_backgrounds/styleD_inv_scene_00001_.webp" loading="lazy" alt="">
+        <span class="zoom">⤢</span>
+        <div class="t"><div class="n">Зал экипировки</div><div class="d">Инвентарь</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== 03 ORCS ROSTER ========== -->
+<section id="orcs">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">03 — ГЕРОИ ФРАКЦИИ</div>
+      <h2>Орки — один базовый образ, много ролей</h2>
+      <p>Единая узнаваемая раса: болотно-зелёная кожа, тяжёлая челюсть, массивные плечи. Меняем броню и оружие — рождается роль. Наведите на бойца, кликните для деталей.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="roster rv">
+      <div class="char" style="--halo:rgba(143,191,74,.5)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_worker_00001__cut.webp" data-name="Рабочий" data-role="Добытчик" data-desc="Стартовый юнит. Скромная одежда, кирка и топорик. Добывает ресурсы и строит здания." data-st="Добыча|Высокая;Броня|—;Роль|Экономика">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_worker_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Рабочий</div>
+      </div>
+      <div class="char" style="--halo:rgba(200,150,60,.5)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_warrior_00001__cut.webp" data-name="Воин" data-role="Ближний бой" data-desc="Броня, каска, боевой топор. Основа армии, широкая агрессивная стойка." data-st="Урон|Высокий;Броня|Высокая;Роль|Танк/ДД">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_warrior_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Воин</div>
+      </div>
+      <div class="char" style="--halo:rgba(120,180,90,.5)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_archer_00001__cut.webp" data-name="Лучник" data-role="Дальний бой" data-desc="Лёгкая накидка с капюшоном, лук и колчан. Поджарый силуэт, бьёт на дистанции." data-st="Урон|Средний;Дальность|Высокая;Роль|Стрелок">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_archer_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Лучник</div>
+      </div>
+      <div class="char" style="--halo:rgba(220,90,50,.55)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_berserker_00001__cut.webp" data-name="Берсерк" data-role="Штурм" data-desc="Ярость и два топора. Хрупкий, но выносит врага в ближнем натиске." data-st="Урон|Очень высокий;Броня|Низкая;Роль|Штурм">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_berserker_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Берсерк</div>
+      </div>
+      <div class="char" style="--halo:rgba(150,170,190,.5)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_guard_00001__cut.webp" data-name="Страж" data-role="Оборона" data-desc="Тяжёлый щит и латы. Держит линию, прикрывает стрелков и рабочих." data-st="Урон|Низкий;Броня|Очень высокая;Роль|Защита">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_guard_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Страж</div>
+      </div>
+      <div class="char" style="--halo:rgba(130,90,200,.55)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_mage_00001__cut.webp" data-name="Шаман" data-role="Магия" data-desc="Тёмная орочья магия, посох. Ослабляет врага и усиливает своих." data-st="Урон|Магия;Броня|Низкая;Роль|Поддержка">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_mage_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Шаман</div>
+      </div>
+      <div class="char" style="--halo:rgba(232,180,74,.6)" data-img="StyleD_Assets/B_orcs_menu/styleD_orc_chieftain_00001__cut.webp" data-name="Вождь" data-role="Герой" data-desc="Лидер клана. Ведёт армию, даёт бонусы, ключевой образ бренда." data-st="Урон|Высокий;Аура|+Армия;Роль|Герой">
+        <div class="glow"></div>
+        <img src="StyleD_Assets/B_orcs_menu/styleD_orc_chieftain_00001__cut.webp" loading="lazy" alt="">
+        <div class="nm">Вождь</div>
+      </div>
+    </div>
+    <div class="roster-hint rv">👆 Наведите — боец оживает · <b>кликните</b> — карточка с описанием</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== 04 IN-GAME ========== -->
+<section id="game">
+  <div class="wrap">
+    <div class="sec-head rv" style="text-align:center; margin:0 auto 56px">
+      <div class="sec-num">04 — КАК ЭТО ВЫГЛЯДИТ В ИГРЕ</div>
+      <h2>Собрано из реальных ассетов</h2>
+      <p style="margin:0 auto">Интерфейс премиального dark-fantasy казуала: кованый металл, золотой кант, медальоны. «Как будто игра уже существует».</p>
+    </div>
+    <div class="screens">
+
+      <!-- SCREEN A: gameplay (координаты из редактора) -->
+      <div class="rv">
+        <div class="phone"><div class="pscreen">
+          <img class="pbg" src="StyleD_Assets/A_backgrounds/styleD_field_00001_.webp" alt="">
+          <div class="p-vig"></div>
+          <!-- units on field -->
+          <img class="pel" style="left:44px; top:342px; width:58px; z-index:3; filter:drop-shadow(0 0 8px rgba(255,127,42,.45))" src="StyleD_Assets/X_fx/styleUI_fx_ring_00001__cut.webp">
+          <img class="pel" style="left:63px; top:222px; width:60px; z-index:4" src="StyleD_Assets/B_orcs_ingame/styleD_ig_worker_00001__cut.webp">
+          <img class="pel" style="left:164px; top:266px; width:58px; z-index:4" src="StyleD_Assets/B_orcs_ingame/styleD_ig_warrior_00001__cut.webp">
+          <img class="pel" style="left:111px; top:320px; width:52px; z-index:4" src="StyleD_Assets/B_orcs_ingame/styleD_ig_archer_00001__cut.webp">
+          <!-- top HUD -->
+          <div class="cpill pel" style="left:8px; top:10px; z-index:6"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_gold_00001__cut.webp"><span>73.9k</span></div>
+          <div class="cpill pel" style="left:92px; top:10px; z-index:6"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_wood_00001__cut.webp"><span>1.2k</span></div>
+          <div class="cpill pel" style="left:166px; top:10px; z-index:6"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_food_00001__cut.webp"><span>560</span></div>
+          <img class="p-set pel" style="left:250px; top:10px; z-index:6" src="StyleD_Assets/F_icons_meta/styleUI_icon_settings_00001__cut.webp">
+          <!-- banner -->
+          <div class="p-banner" style="left:58px; top:46px; transform:none; z-index:6"><img src="StyleD_Assets/F_ui_frames/styleUI_u6_banner_00001__cut.webp"><div class="lab">КРЕПОСТЬ · 10</div></div>
+          <!-- side buttons -->
+          <img class="pel" style="left:11px; top:62px; width:44px; z-index:6" src="StyleD_Assets/F_icons_meta/styleUI_icon_offer_00001__cut.webp">
+          <img class="pel" style="left:13px; top:133px; width:44px; z-index:6" src="StyleD_Assets/F_icons_meta/styleUI_icon_quests_00001__cut.webp">
+          <img class="pel" style="left:235px; top:70px; width:44px; z-index:6" src="StyleD_Assets/F_icons_meta/styleUI_icon_league_00001__cut.webp">
+          <img class="pel" style="left:232px; top:140px; width:44px; z-index:6" src="StyleD_Assets/F_icons_meta/styleUI_icon_clan_00001__cut.webp">
+          <!-- CTA -->
+          <div class="p-cta" style="left:14px; top:498px; width:258px; right:auto; bottom:auto; z-index:6"><img src="StyleD_Assets/F_icons_action/styleUI_icon_worker_cta_00001__cut.webp"> СОЗДАТЬ РАБОЧЕГО</div>
+          <!-- nav -->
+          <img class="p-plank" src="StyleD_Assets/F_ui_frames/styleUI_u8_navbar_00001__cut.webp">
+          <img class="p-navicon act" style="left:16px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_map_00001__cut.webp">
+          <img class="p-navicon" style="left:72px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_base_00001_.webp">
+          <img class="p-navicon" style="left:128px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_army_00001__cut.webp">
+          <img class="p-navicon" style="left:184px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_shop_00001__cut.webp">
+          <img class="p-navicon" style="left:240px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_science_00001__cut.webp">
+        </div></div>
+        <div class="p-label">Главный экран<span>Поле · добыча · мёрдж · наступление</span></div>
+      </div>
+
+      <!-- SCREEN B: inventory (координаты из редактора) -->
+      <div class="rv d2">
+        <div class="phone"><div class="pscreen">
+          <img class="pbg" src="StyleD_Assets/A_backgrounds/styleD_inv_scene_00001_.webp" alt="">
+          <div class="p-vig"></div>
+          <div class="pel" style="left:58px; top:430px; width:170px; height:56px; z-index:3; filter:none; background:radial-gradient(closest-side,rgba(255,180,90,.4),transparent 72%)"></div>
+          <img class="pel" style="left:34px; top:117px; width:201px; z-index:4; filter:drop-shadow(0 14px 16px rgba(0,0,0,.55))" src="StyleD_Assets/B_orcs_menu/styleD_orc_warrior_00001__cut.webp">
+          <!-- equip slots -->
+          <img class="pel" style="left:19px; top:88px; width:30px; z-index:6" src="StyleD_Assets/G_slots/styleUI_slot_head_00001__cut.webp">
+          <img class="pel" style="left:17px; top:135px; width:30px; z-index:6" src="StyleD_Assets/G_slots/styleUI_slot_body_00001__cut.webp">
+          <img class="pel" style="left:17px; top:186px; width:30px; z-index:6" src="StyleD_Assets/G_slots/styleUI_slot_weapon_00001__cut.webp">
+          <img class="pel" style="left:237px; top:91px; width:30px; z-index:6" src="StyleD_Assets/G_slots/styleUI_slot_hands_00001__cut.webp">
+          <img class="pel" style="left:231px; top:139px; width:30px; z-index:6" src="StyleD_Assets/G_slots/styleUI_slot_legs_00001__cut.webp">
+          <img class="pel" style="left:232px; top:183px; width:30px; z-index:6" src="StyleD_Assets/G_slots/styleUI_slot_cloak_00001__cut.webp">
+          <!-- top HUD -->
+          <div class="cpill pel" style="left:8px; top:10px; z-index:7"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_gold_00001__cut.webp"><span>73.9k</span></div>
+          <div class="cpill pel" style="left:92px; top:10px; z-index:7"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_crystal_00001__cut.webp"><span>331</span></div>
+          <img class="p-set pel" style="left:250px; top:10px; z-index:7" src="StyleD_Assets/F_icons_meta/styleUI_icon_settings_00001__cut.webp">
+          <!-- nav -->
+          <img class="p-plank" src="StyleD_Assets/F_ui_frames/styleUI_u8_navbar_00001__cut.webp">
+          <img class="p-navicon" style="left:16px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_map_00001__cut.webp">
+          <img class="p-navicon" style="left:72px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_base_00001_.webp">
+          <img class="p-navicon act" style="left:128px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_army_00001__cut.webp">
+          <img class="p-navicon" style="left:184px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_shop_00001__cut.webp">
+          <img class="p-navicon" style="left:240px; top:582px" src="StyleD_Assets/F_icons_nav/styleUI_icon_science_00001__cut.webp">
+        </div></div>
+        <div class="p-label">Инвентарь<span>Переодевание · рабочий → воин → лучник</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== 05 ENEMIES ========== -->
+<section id="enemies">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">05 — ПРОТИВНИКИ</div>
+      <h2>Бестиарий и фракция эльфов</h2>
+      <p>По пути орки встречают лесных тварей, а затем — армию эльфов-ИИ, что когда-то их изгнала. Кликните на любого — крупный вид.</p>
+    </div>
+
+    <div class="kit-group rv">Монстры · лесные твари</div>
+    <div class="grid g-mon" style="margin-bottom:44px">
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_troll_00001__cut.webp" data-title="Тролль"><img src="StyleD_Assets/C_monsters/styleD_monster_troll_00001__cut.webp" loading="lazy"><div class="nm">Тролль</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_bear_00001__cut.webp" data-title="Медведь"><img src="StyleD_Assets/C_monsters/styleD_monster_bear_00001__cut.webp" loading="lazy"><div class="nm">Медведь</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_boar_00001__cut.webp" data-title="Кабан"><img src="StyleD_Assets/C_monsters/styleD_monster_boar_00001__cut.webp" loading="lazy"><div class="nm">Кабан</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_wolf_00001__cut.webp" data-title="Волк"><img src="StyleD_Assets/C_monsters/styleD_monster_wolf_00001__cut.webp" loading="lazy"><div class="nm">Волк</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_spider_00001__cut.webp" data-title="Паук"><img src="StyleD_Assets/C_monsters/styleD_monster_spider_00001__cut.webp" loading="lazy"><div class="nm">Паук</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_treant_00001__cut.webp" data-title="Энт"><img src="StyleD_Assets/C_monsters/styleD_monster_treant_00001__cut.webp" loading="lazy"><div class="nm">Энт</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_slime_00001__cut.webp" data-title="Слизень"><img src="StyleD_Assets/C_monsters/styleD_monster_slime_00001__cut.webp" loading="lazy"><div class="nm">Слизень</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleD_monster_deer_00001__cut.webp" data-title="Олень"><img src="StyleD_Assets/C_monsters/styleD_monster_deer_00001__cut.webp" loading="lazy"><div class="nm">Олень</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleUI_monster_snake_00001__cut.webp" data-title="Змея"><img src="StyleD_Assets/C_monsters/styleUI_monster_snake_00001__cut.webp" loading="lazy"><div class="nm">Змея</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleUI_monster_bat_00001__cut.webp" data-title="Летучая мышь"><img src="StyleD_Assets/C_monsters/styleUI_monster_bat_00001__cut.webp" loading="lazy"><div class="nm">Мышь</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_monsters/styleUI_monster_mushroom_00001__cut.webp" data-title="Гриб"><img src="StyleD_Assets/C_monsters/styleUI_monster_mushroom_00001__cut.webp" loading="lazy"><div class="nm">Гриб-моб</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/D_resources_objects/styleD_env_crystal_blue_00001__cut.webp" data-title="Кристалл"><img src="StyleD_Assets/D_resources_objects/styleD_env_crystal_blue_00001__cut.webp" loading="lazy"><div class="nm">Кристалл</div></div>
+    </div>
+
+    <div class="kit-group rv">Фракция эльфов · ИИ-противник</div>
+    <div class="grid g-elf">
+      <div class="tile big rv" data-full="StyleD_Assets/C_elves/styleD_elf_king_00001__cut.webp" data-title="Король эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_king_00001__cut.webp" loading="lazy"><div class="nm">Король</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/C_elves/styleD_elf_warrior_00001__cut.webp" data-title="Воин эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_warrior_00001__cut.webp" loading="lazy"><div class="nm">Воин</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/C_elves/styleD_elf_mage_00001__cut.webp" data-title="Маг эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_mage_00001__cut.webp" loading="lazy"><div class="nm">Маг</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/C_elves/styleD_elf_archer_00001__cut.webp" data-title="Лучник эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_archer_00001__cut.webp" loading="lazy"><div class="nm">Лучник</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/C_elves/styleD_elf_worker_00001__cut.webp" data-title="Рабочий эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_worker_00001__cut.webp" loading="lazy"><div class="nm">Рабочий</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_elves/styleD_elf_fortress_00001__cut.webp" data-title="Крепость эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_fortress_00001__cut.webp" loading="lazy"><div class="nm">Крепость</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_elves/styleD_elf_city_00001__cut.webp" data-title="Город эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_city_00001__cut.webp" loading="lazy"><div class="nm">Город</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_elves/styleD_elf_tower_00001__cut.webp" data-title="Башня эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_tower_00001__cut.webp" loading="lazy"><div class="nm">Башня</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_elves/styleD_elf_barracks_00001__cut.webp" data-title="Казарма эльфов"><img src="StyleD_Assets/C_elves/styleD_elf_barracks_00001__cut.webp" loading="lazy"><div class="nm">Казарма</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/C_elves/styleD_elf_mage_00002__cut.webp" data-title="Маг эльфов II"><img src="StyleD_Assets/C_elves/styleD_elf_mage_00002__cut.webp" loading="lazy"><div class="nm">Магистр</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== 06 BUILDINGS ========== -->
+<section id="buildings">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">06 — ПОСТРОЙКИ ОРКОВ</div>
+      <h2>База и здания</h2>
+      <p>Крепость, производство ресурсов и войск — в единой орочьей эстетике: тёмное дерево, камень, факелы, боевые знамёна.</p>
+    </div>
+    <div class="grid g-bld">
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_stronghold_00001__cut.webp" data-title="Крепость"><img src="StyleD_Assets/E_buildings/styleD_bld_stronghold_00001__cut.webp" loading="lazy"><div class="nm">Крепость</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_barracks_00001__cut.webp" data-title="Казарма"><img src="StyleD_Assets/E_buildings/styleD_bld_barracks_00001__cut.webp" loading="lazy"><div class="nm">Казарма</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_forge_00001__cut.webp" data-title="Кузница"><img src="StyleD_Assets/E_buildings/styleD_bld_forge_00001__cut.webp" loading="lazy"><div class="nm">Кузница</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_lumbermill_00001__cut.webp" data-title="Лесопилка"><img src="StyleD_Assets/E_buildings/styleD_bld_lumbermill_00001__cut.webp" loading="lazy"><div class="nm">Лесопилка</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_range_00001__cut.webp" data-title="Стрельбище"><img src="StyleD_Assets/E_buildings/styleD_bld_range_00001__cut.webp" loading="lazy"><div class="nm">Стрельбище</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_farm_00001__cut.webp" data-title="Ферма"><img src="StyleD_Assets/E_buildings/styleD_bld_farm_00001__cut.webp" loading="lazy"><div class="nm">Ферма</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_storage_00001__cut.webp" data-title="Склад"><img src="StyleD_Assets/E_buildings/styleD_bld_storage_00001__cut.webp" loading="lazy"><div class="nm">Склад</div></div>
+      <div class="tile big rv" data-full="StyleD_Assets/E_buildings/styleD_bld_hut_00001__cut.webp" data-title="Хижина"><img src="StyleD_Assets/E_buildings/styleD_bld_hut_00001__cut.webp" loading="lazy"><div class="nm">Хижина</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/D_resources_objects/styleD_prop_torch_00001__cut.webp" data-title="Факел"><img src="StyleD_Assets/D_resources_objects/styleD_prop_torch_00001__cut.webp" loading="lazy"><div class="nm">Факел</div></div>
+      <div class="tile rv" data-full="StyleD_Assets/E_buildings/styleD_bld_slot_00001__cut.webp" data-title="Слот застройки"><img src="StyleD_Assets/E_buildings/styleD_bld_slot_00001__cut.webp" loading="lazy"><div class="nm">Слот</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== 07 UI KIT ========== -->
+<section id="uikit">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-num">07 — UI KIT · ДИЗАЙН-СИСТЕМА</div>
+      <h2>Единый набор интерфейса</h2>
+      <p>Все элементы в одном языке: кованый металл + золотой кант + медальоны. Иконки без встроенного текста — легко локализовать. Ниже — реальные сгенерированные ассеты.</p>
+    </div>
+
+    <div class="kit-block">
+      <div class="kit-group rv">Рамки и панели</div>
+      <div class="frames-row rv">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u6_banner_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u4_currency_pill_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u1_medallion_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u3_hero_button_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u2_button_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u7_counter_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u17_timer_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u16_badge_00001__cut.webp">
+        <img class="lg" src="StyleD_Assets/F_ui_frames/styleUI_u10_popup_00001__cut.webp">
+        <img class="lg" src="StyleD_Assets/F_ui_frames/styleUI_u12_card_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u13_slot_00001__cut.webp">
+        <img src="StyleD_Assets/F_ui_frames/styleUI_u8_navbar_00001__cut.webp">
+      </div>
+    </div>
+
+    <div class="kit-block">
+      <div class="kit-group rv">Иконки · навигация, ресурсы, действия, мета, бусты, статы</div>
+      <div class="kit rv">
+        <div class="k"><img src="StyleD_Assets/F_icons_nav/styleUI_icon_map_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_nav/styleUI_icon_base_00001_.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_nav/styleUI_icon_army_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_nav/styleUI_icon_shop_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_nav/styleUI_icon_science_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_gold_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_wood_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_ore_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_food_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_resources/styleUI_icon_crystal_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_build_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_merge_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_attack_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_upgrade_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_worker_cta_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_confirm_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_close_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_info_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_lock_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_action/styleUI_icon_play_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_offer_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_quests_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_settings_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_clan_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_league_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_mail_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_daily_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_wheel_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_friends_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_meta/styleUI_icon_adbonus_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_boost/styleUI_icon_speedup_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_boost/styleUI_icon_boost_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_boost/styleUI_icon_autocollect_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_boost/styleUI_icon_multiplier_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_stat/styleUI_icon_hp_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_stat/styleUI_icon_dmg_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_stat/styleUI_icon_armor_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_stat/styleUI_icon_speed_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_stat/styleUI_icon_crit_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/F_icons_stat/styleUI_icon_range_00001__cut.webp"></div>
+      </div>
+    </div>
+
+    <div class="kit-block">
+      <div class="kit-group rv">Экипировка · предметы инвентаря</div>
+      <div class="kit rv">
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_axe_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_sword_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_bow_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_crossbow_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_armor_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_helmet_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_bracers_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_boots_00001__cut.webp"></div>
+        <div class="k"><img src="StyleD_Assets/G_equipment/styleUI_item_cloak_00001__cut.webp"></div>
+      </div>
+    </div>
+
+    <!-- palette + type -->
+    <div class="sys rv">
+      <div>
+        <div class="kit-group">Палитра</div>
+        <div class="swatches">
+          <div style="background:#1c1a2a">Ночь #1C1A2A</div>
+          <div style="background:#3a2e4c">Сумрак</div>
+          <div style="background:#6f8a3e; color:#0d1000">Кожа орка</div>
+          <div style="background:#c07a3a">Дерево</div>
+          <div style="background:#e8b44a; color:#2a1c00">Золото</div>
+          <div style="background:#ff7f2a; color:#2a1000">Угли</div>
+        </div>
+        <p style="color:var(--dim); font-size:14px; margin-top:16px">Приглушённая землистая база + точечные тёплые акценты (факелы, золото, руда). «Мрачно, но не грязно».</p>
+      </div>
+      <div class="type-demo">
+        <div class="kit-group">Типографика</div>
+        <div class="d gold">RUSSO ONE · ЗАГОЛОВКИ</div>
+        <div class="b">Inter — основной текст интерфейса и описаний. Плотный, чистый, отлично читается на мелких экранах и поддерживает кириллицу.</div>
+        <div class="lab">Дисплей + гротеск = игровой характер</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== SCOPE STRIP ========== -->
+<section style="padding:80px 0">
+  <div class="wrap">
+    <div class="stats-strip">
+      <div class="stat rv"><div class="num">7</div><div class="lab">Классов орков</div></div>
+      <div class="stat rv d1"><div class="num">12+</div><div class="lab">Монстров</div></div>
+      <div class="stat rv d2"><div class="num">9</div><div class="lab">Зданий</div></div>
+      <div class="stat rv d3"><div class="num">60+</div><div class="lab">UI-элементов</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CLOSING ========== -->
+<section id="next" class="closing">
+  <div class="wrap">
+    <div class="rv">
+      <div class="sec-num">08 — ДАЛЬШЕ</div>
+      <h2>Стиль есть.<br>Соберём <span class="gold">полную игру</span>.</h2>
+      <p>Это визуальное направление и полный набор ассетов «как будто игра уже существует». Дальше — продакшн: 3D-модели, риг, LOD, анимация, экспорт под движок.</p>
+    </div>
+    <div class="steps rv">
+      <div class="step"><div class="n">01</div><div class="t">Утверждение стиля</div><div class="d">Фиксируем Grim Casual как эталон, правки концептов.</div></div>
+      <div class="step"><div class="n">02</div><div class="t">Альфа-пилот</div><div class="d">Один орк полным циклом: модель → риг → LOD → переодевание.</div></div>
+      <div class="step"><div class="n">03</div><div class="t">Масштабирование</div><div class="d">Юниты, монстры, окружение, здания, UI — по единому пайплайну.</div></div>
+    </div>
+    <div class="contact rv">
+      <div><div class="l">Студия</div><div class="v">3D.GRYZ Studio</div></div>
+      <div><div class="l">Менеджер</div><div class="v">@nastya_parr</div></div>
+      <div><div class="l">Направление</div><div class="v">Grim Casual · Style D</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 <a href="https://3dgryz.ru" target="_blank" rel="noopener">3D.GRYZ Studio</a> · Визуальная концепция ORCS · <a href="https://3dgryz.ru" target="_blank" rel="noopener">3dgryz.ru</a></footer>
+
+<!-- ========== LIGHTBOX ========== -->
+<div class="lb" id="lb">
+  <div class="box">
+    <button class="close" id="lbClose">✕</button>
+    <div class="imgwrap"><img id="lbImg" src="" alt=""></div>
+    <div class="info" id="lbInfo">
+      <div class="role" id="lbRole"></div>
+      <h3 id="lbTitle"></h3>
+      <p id="lbDesc"></p>
+      <div class="st" id="lbStats"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // progress + topbar
+  const prog=document.getElementById('prog'), topbar=document.getElementById('topbar');
+  addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-innerHeight;
+    prog.style.width=(scrollY/h*100)+'%';
+    topbar.classList.toggle('solid', scrollY>60);
+  });
+
+  // reveal on scroll
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in'); io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  // hero parallax
+  const hb=document.querySelector('.hero-bg'), ho=document.querySelector('.hero-orc');
+  addEventListener('mousemove',e=>{
+    const x=(e.clientX/innerWidth-.5), y=(e.clientY/innerHeight-.5);
+    hb.style.transform=`scale(1.08) translate(${x*-14}px,${y*-10}px)`;
+    if(ho) ho.style.transform=`translate(${x*18}px,${y*8}px)`;
+  });
+
+  // lightbox
+  const lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg'),
+        lbTitle=document.getElementById('lbTitle'), lbRole=document.getElementById('lbRole'),
+        lbDesc=document.getElementById('lbDesc'), lbStats=document.getElementById('lbStats'),
+        lbInfo=document.getElementById('lbInfo');
+  function openLB(img,title,role,desc,stats,halo){
+    lbImg.src=img; lbTitle.textContent=title;
+    lbRole.textContent=role||''; lbDesc.textContent=desc||'';
+    lb.style.setProperty('--lbhalo',halo||'rgba(232,180,74,.35)');
+    lbStats.innerHTML='';
+    if(stats){stats.split(';').forEach(s=>{const[k,v]=s.split('|'); if(k){const r=document.createElement('div'); r.className='r'; r.innerHTML=`<span>${k}</span><b>${v||''}</b>`; lbStats.appendChild(r);}});}
+    lbInfo.style.display=(role||desc||stats)?'block':'none';
+    lb.classList.add('on');
+  }
+  function closeLB(){lb.classList.remove('on')}
+  document.getElementById('lbClose').onclick=closeLB;
+  lb.onclick=e=>{if(e.target===lb||e.target.classList.contains('box'))closeLB()};
+  addEventListener('keydown',e=>{if(e.key==='Escape')closeLB()});
+
+  // characters: оборачиваем каждого в равную полосу-триггер (чистый ховер/клик без наложений)
+  document.querySelectorAll('.roster .char').forEach(c=>{
+    const slot=document.createElement('div'); slot.className='slot';
+    c.parentNode.insertBefore(slot,c); slot.appendChild(c);
+    slot.onclick=()=>openLB(c.dataset.img,c.dataset.name,c.dataset.role,c.dataset.desc,c.dataset.st,getComputedStyle(c).getPropertyValue('--halo'));
+  });
+  // tiles + locations
+  document.querySelectorAll('.tile,.loc').forEach(t=>{
+    t.onclick=()=>openLB(t.dataset.full,t.dataset.title,'','','', 'rgba(232,180,74,.3)');
+  });
+</script>
+</body>
+</html>
